@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: app-332488
+  name: app-332488
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-332488
+  template:
+    metadata:
+      name: app-332488
+      labels:
+        app: app-332488
+    spec:
+      containers:
+      - name: app-332488
+        image: debjyotidas/app-332488:latest
+        resources:
+          requests:
+            cpu: 50m
+            memory: 1024Mi
+          limits:
+            cpu: 1000m
+            memory: 2048Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: app-332488
+  name: app-332488
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8090
+  selector:
+    app: app-332488
