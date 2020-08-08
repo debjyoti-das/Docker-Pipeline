@@ -10,6 +10,30 @@ node {
 	def app_dockerfile_name = 'Dockerfile'
 	def app_container_name = 'app-332488'
 	def app_tag="latest"
+
+    agent {
+    kubernetes {
+      label 'kubectl'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: debjyoti
+  labels:
+    name: kubectl
+spec:
+  # Use service account that can deploy to all namespaces
+  serviceAccountName: jenkins-robot
+  containers:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+"""
+}
+  }
     
 
     stage('Initialize'){
