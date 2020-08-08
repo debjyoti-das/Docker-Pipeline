@@ -50,6 +50,7 @@ node {
     }
 
     stage('Deploy Application on K8s') {
+    	container('kubectl'){
 		withKubeConfig([credentialsId: 'kubeUser',
 		serverUrl: env.K8s_SERVER_URL,
 		contextName: env.K8s_CONTEXT_NAME,
@@ -58,6 +59,7 @@ node {
 		}     
     		echo "Application started on port: HTTP_PORT (http)"
 	}
+    }
 
 }
 
