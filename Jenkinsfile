@@ -28,7 +28,7 @@ node {
 
     stage('Sonar'){
         try {
-            sh "mvn sonar:sonar -Dsonar.host.url=http://51.124.5.78/sonarqube -Dsonar.login=2452125946f9760df1c1214bbcecdaba223b0bcc"
+            sh "mvn sonar:sonar -Dsonar.host.url=http://52.149.109.105/sonarqube -Dsonar.login=56bce2dc8b06669f11af248918b6ca080ba72f0d"
         } catch(error){
             echo "The sonar server could not be reached ${error}"
         }
@@ -50,8 +50,7 @@ node {
     }
 
     stage('Deploy Application on K8s') {
-    	container('kubectl'){
-		withKubeConfig([credentialsId: 'dockerHubAccount',
+		withKubeConfig([credentialsId: 'kubeUser',
 		serverUrl: env.K8s_SERVER_URL,
 		contextName: env.K8s_CONTEXT_NAME,
 		clusterName: env.K8s_CLUSTER_NAME]){
@@ -59,7 +58,6 @@ node {
 		}     
     		echo "Application started on port: HTTP_PORT (http)"
 	}
-    }
 
 }
 
