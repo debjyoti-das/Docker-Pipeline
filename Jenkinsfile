@@ -3,6 +3,22 @@ def CONTAINER_TAG="latest"
 def DOCKER_HUB_USER="debjyotidas"
 def HTTP_PORT="8090"
 
+podTemplate(yaml: """
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: debjyoti
+  labels:
+    name: kubectl
+spec:
+  serviceAccountName: jenkins-robot
+  containers:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ['cat']
+    tty: true
+"""
+  ) {
 
 node {
 
@@ -11,30 +27,6 @@ node {
 	def app_container_name = 'app-332488'
 	def app_tag="latest"
 
-    agent {
-    kubernetes {
-      label 'kubectl'
-      defaultContainer 'jnlp'
-      yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: debjyoti
-  labels:
-    name: kubectl
-spec:
-  # Use service account that can deploy to all namespaces
-  serviceAccountName: jenkins-robot
-  containers:
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command:
-    - cat
-    tty: true
-"""
-}
-  }
-    
 
     stage('Initialize'){
         def dockerHome = tool 'myDocker'
@@ -84,6 +76,8 @@ spec:
     		echo "Application started on port: HTTP_PORT (http)"
 	}
     }
+
+}
 
 }
 
