@@ -14,7 +14,7 @@ spec:
   serviceAccountName: jenkins-robot
   containers:
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: gcr.io/cloud-builders/kubectl
     command: ['cat']
     tty: true
 """
