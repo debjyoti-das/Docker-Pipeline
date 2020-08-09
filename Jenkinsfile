@@ -37,9 +37,9 @@ node {
 
     stage('Build and Push to Docker Registry'){
         	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-    			sh ("docker login -u USERNAME -p PASSWORD")
-			sh ("docker build -t USERNAME/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
-    			sh ("docker push USERNAME/${app_name}:${BUILD_NUMBER}")
+    			sh ("docker login -u ${USERNAME} -p ${PASSWORD}")
+			sh ("docker build -t ${USERNAME}/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
+    			sh ("docker push ${USERNAME}/${app_name}:${BUILD_NUMBER}")
         	}
     		echo "Image push complete"
     }
