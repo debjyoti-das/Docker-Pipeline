@@ -34,43 +34,23 @@ node {
         }
      }
 
-    stage("Image Prune"){
-        	imagePrune(CONTAINER_NAME)
-    }
 
-    stage('Image Build'){
-		sh("docker build -t ${app_name}:${app_tag} --pull --no-cache .")
-		echo "Image build complete"
-    }
-
-    stage('Push to Docker Registry'){
+    stage('Build and Push to Docker Registry'){
         	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            		pushToImage(CONTAINER_NAME, CONTAINER_TAG, USERNAME, PASSWORD)
+    			sh ("docker login -u USERNAME -p PASSWORD")
+			sh ("docker build -t USERNAME/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
+    			sh ("docker push USERNAME/${app_name}:${BUILD_NUMBER}")
         	}
+    		echo "Image push complete"
     }
 
     stage('Deploy Application on K8s') {
     		sh("curl -LO https://storage.googleapis.com/kubernetes-release/release/\$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl")
 		sh("chmod +x ./kubectl")
-		sh("./kubectl apply -f ${app_name}.yaml -n debjyoti")
+		sh("cat ./${app_name}.yaml | sed s/1.0.0/${BUILD_NUMBER}/g | ./kubectl apply -f -")
     		echo "Application started on port: HTTP_PORT (http)"
     }
 
 }
 
-
-def imagePrune(containerName){
-    try {
-        sh "docker image prune -f"
-        sh "docker stop $containerName"
-    } catch(error){}
-}
-
-
-def pushToImage(containerName, tag, dockerUser, dockerPassword){
-    sh "docker login -u $dockerUser -p $dockerPassword"
-    sh "docker tag $containerName:$tag $dockerUser/$containerName:$tag"
-    sh "docker push $dockerUser/$containerName:$tag"
-    echo "Image push complete"
-}
 
