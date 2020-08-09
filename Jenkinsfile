@@ -3,22 +3,6 @@ def CONTAINER_TAG="latest"
 def DOCKER_HUB_USER="debjyotidas"
 def HTTP_PORT="8090"
 
-podTemplate(yaml: """
-apiVersion: v1
-kind: Pod
-metadata:
-  namespace: debjyoti
-  labels:
-    name: kubectl
-spec:
-  serviceAccountName: jenkins-robot
-  containers:
-  - name: kubectl
-    image: gcr.io/cloud-builders/kubectl
-    command: ['cat']
-    tty: true
-"""
-  ) {
 
 node {
 
@@ -44,7 +28,7 @@ node {
 
     stage('Sonar'){
         try {
-            sh "mvn sonar:sonar -Dsonar.host.url=http://52.149.109.105/sonarqube -Dsonar.login=56bce2dc8b06669f11af248918b6ca080ba72f0d"
+            sh "mvn sonar:sonar -Dsonar.host.url=http://51.138.26.91/sonarqube -Dsonar.login=15097379df253597e9033e598f579c33da85d879"
         } catch(error){
             echo "The sonar server could not be reached ${error}"
         }
@@ -66,20 +50,14 @@ node {
     }
 
     stage('Deploy Application on K8s') {
-    	container('kubectl'){
-		withKubeConfig([credentialsId: 'kubeUser',
-		serverUrl: env.K8s_SERVER_URL,
-		contextName: env.K8s_CONTEXT_NAME,
-		clusterName: env.K8s_CLUSTER_NAME]){
-			sh("kubectl apply -f ${app_name}.yaml -n debjyoti")
-		}     
+    		sh("curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl")
+		sh("chmod +x ./kubectl")
+		sh("./kubectl apply -f ${app_name}.yaml -n debjyoti")
     		echo "Application started on port: HTTP_PORT (http)"
-	}
     }
 
 }
 
-}
 
 def imagePrune(containerName){
     try {
