@@ -39,7 +39,6 @@ node {
         	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 			sh ("apk add docker")
 			sh ("apk add openrc --no-cache")
-    			sh ("echo { \"insecure-registries\": [ \"http://20.50.33.238:5000\" ] } > /etc/docker/daemon.json")
 			sh ("service docker restart")
     			sh ("docker login -u ${USERNAME} -p ${PASSWORD} http://20.50.33.238:5000")
 			sh ("docker build -t 20.50.33.238:5000/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
