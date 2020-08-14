@@ -23,14 +23,16 @@ spec:
     spec:
       containers:
       - name: app-332488
-        image: debjyotidas/app-332488:1.0.0
+        image: 20.50.33.238:5000/app-332488:1.0.0
         resources:
           requests:
+            cpu: 25m
+            memory: 256Mi
+          limits:
             cpu: 50m
             memory: 1024Mi
-          limits:
-            cpu: 100m
-            memory: 2048Mi
+      imagePullSecrets:
+      - name: registrykey-332488
 ---
 apiVersion: v1
 kind: Service
@@ -40,7 +42,7 @@ metadata:
   name: app-332488
   namespace: debjyoti
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - port: 8090
   selector:
