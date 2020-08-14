@@ -39,7 +39,8 @@ node {
         	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
 			sh 'docker exec --tty $(docker ps -ql) sh -c "mkdir -p /etc/docker"'
 			sh 'docker exec --tty $(docker ps -ql) sh -c "mkdir -p /root/.docker"'
-			sh ''' docker exec --tty $(docker ps -ql) sh -c "cat < /etc/docker/daemon.json { "insecure-registries": [ "http://20.50.33.238:5000" ] }" '''
+			sh 'docker exec --tty $(docker ps -ql) sh -c "touch /etc/docker/daemon.json"'
+			sh ''' docker exec --tty $(docker ps -ql) sh -c "cat < /etc/docker/daemon.json { \"insecure-registries\": [ \"http://20.50.33.238:5000\" ] }" '''
     			sh ("docker login -u ${USERNAME} -p ${PASSWORD} http://20.50.33.238:5000")
 			sh ("docker build -t 20.50.33.238:5000/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
     			sh ("docker push 20.50.33.238:5000/${app_name}:${BUILD_NUMBER}")
