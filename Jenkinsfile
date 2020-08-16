@@ -28,7 +28,7 @@ node {
 
     stage('Sonar'){
         try {
-            sh "mvn sonar:sonar -Dsonar.host.url=http://20.50.157.178/sonarqube -Dsonar.login=d7f92f5c317b66d4896891cdc5649f0bf2d3e5a2"
+            sh "mvn sonar:sonar -Dsonar.host.url=http://52.149.105.69/sonarqube -Dsonar.login=9a8664d87751881f3af1422b9bcb343789017bcf"
         } catch(error){
             echo "The sonar server could not be reached ${error}"
         }
@@ -40,10 +40,10 @@ node {
 			sh 'docker exec --tty $(docker ps -ql) sh -c "mkdir -p /etc/docker"'
 			sh 'docker exec --tty $(docker ps -ql) sh -c "mkdir -p /root/.docker"'
 			sh 'docker exec --tty $(docker ps -ql) sh -c "touch /etc/docker/daemon.json"'
-			sh ''' docker exec --tty $(docker ps -ql) sh -c "cat < /etc/docker/daemon.json { \"insecure-registries\": [ \"http://20.50.33.238:5000\" ] }" '''
-    			sh ("docker login -u ${USERNAME} -p ${PASSWORD} http://20.50.33.238:5000")
-			sh ("docker build -t 20.50.33.238:5000/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
-    			sh ("docker push 20.50.33.238:5000/${app_name}:${BUILD_NUMBER}")
+			sh ''' docker exec --tty $(docker ps -ql) sh -c "cat < /etc/docker/daemon.json { \"insecure-registries\": [ \"http://52.149.104.55:5000\" ] }" '''
+    			sh ("docker login -u ${USERNAME} -p ${PASSWORD} http://52.149.104.55:5000")
+			sh ("docker build -t 52.149.104.55:5000/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
+    			sh ("docker push 52.149.104.55:5000/${app_name}:${BUILD_NUMBER}")
         	}
     		echo "Image push complete"
     }

@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: app-332488
-        image: 20.50.33.238:5000/app-332488:1.0.0
+        image: 52.149.104.55:5000/app-332488:1.0.0
         resources:
           requests:
             cpu: 25m
