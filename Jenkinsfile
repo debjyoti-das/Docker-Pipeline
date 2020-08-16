@@ -37,6 +37,7 @@ node {
 
     stage('Build and Push to Docker Registry'){
         	withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+			sh 'docker exec --tty $(docker ps -ql) sh -c "touch /etc/docker/daemon.json"'
 			sh ''' docker exec --tty $(docker ps -ql) sh -c "cat < /etc/docker/daemon.json { "insecure-registries": [ "http://52.149.104.55:5000" ] }" '''
     			sh ("docker login -u ${USERNAME} -p ${PASSWORD} http://52.149.104.55:5000")
 			sh ("docker build -t 52.149.104.55:5000/${app_name}:${BUILD_NUMBER} --pull --no-cache .")
